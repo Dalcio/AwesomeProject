@@ -8,7 +8,7 @@
 
 import React, { Component } from 'react';
 import {
-  Picker,
+  Button,
   View,
   Text
 } from 'react-native';
@@ -17,27 +17,26 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      bestCaption: 'dalcio'
+      meaningOfLife: 0,
+      loveRN: true,
+      disabled: false
     }
+  }
+  enable() {
+    setInterval(() => {
+      this.setState({ disabled: false });
+    }, 2000);
   }
   render() {
     return (
       <View>
         <Text>Welcome to React native 2</Text>
-        <Picker selectedValue={this.state.bestCaption} style={{ height: 100, width: 200 }}
-          onValueChange={(inValue, inIndex) => {
-            this.setState({ bestCaption: inValue });
-            console.log(`inIndex ${ inIndex }`);
-          }}
-        > 
-          <Picker.Item label='Dálcio Macute Garcia' value='dalcio' />
-          <Picker.Item label='Ezedélio Macuete Garcia' value='ezedelio' />
-          <Picker.Item label='Judénia Macuete Garcia' value='judenia' />
-          <Picker.Item label='Etinério Macuete Garcia' value='etinerio' />
-          <Picker.Item label='Isabel João Pedro' value='isabel' />
-          <Picker.Item label='Dalioneth Macuete Garcia' value='dalioneth' />
-          <Picker.Item label='Ephatha de Assunção Macuete Garcia' value='ephatha' />
-        </Picker>
+        <Button title="Go ahead, press me, I dare ya!"
+          onPress={() => {
+            console.log('pressed!');
+            this.setState({ disabled: true });
+            this.enable();
+          }} color={'purple'} disabled={this.state.disabled} />
       </View>
     );
   }
