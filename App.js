@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import {
   View,
   StyleSheet,
-  Text, Platform, FlatList
+  Text, Platform, FlatList, Image
 } from 'react-native';
 import Header from './components/Header';
 import InputBar from './components/InputBar';
 import TodoItem from './components/TodoItem';
+import ListButton from './components/ListButton';
+import List from './components/List';
 
 export default class App extends Component {
   constructor() {
@@ -68,12 +70,19 @@ export default class App extends Component {
     this.setState({ todos });
   }
 
+  showList(){
+    return(
+      <List />
+    );
+  }
+
   render() {
     const statusBar = (Platform.OS == 'ios') ? <View style={styles.statusBar}></View> : <View></View>;
 
     return (
       <View style={styles.container}>
         <Header title="todapp" />
+
         <InputBar
           textChange={todoInput => this.setState({ todoInput })}
           addNewTodo={() => this.addNewTodo()}
@@ -93,6 +102,7 @@ export default class App extends Component {
             );
           }}
         />
+        <ListButton showList={()=> this.showList()}/>
       </View>
     );
   }
