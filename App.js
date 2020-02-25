@@ -1,67 +1,110 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
   View,
-  Text, Button, AccessibilityInfo,
-  Alert, Platform, Vibration
+  StyleSheet,
+  Text, Platform, FlatList
 } from 'react-native';
-
-class ScreenReaderStatusExample extends React.Component {
-  state = { isEnable: false };
-  componentDidMount() {
-    AccessibilityInfo.addEventListener('change', this.toggleState);
-    AccessibilityInfo.fetch().done((isEnabled) => {
-      this.setState({ isEnabled: isEnabled });
-    });
-  }
-  componentWillUnmount() {
-    AccessibilityInfo.removeEventListener("change", this.toggleState);
-  }
-  toggleState = (isEnabled) => {
-    this.setState({ isEnabled: isEnabled });
-  };
-  render() {
-    return (
-      <View>
-        <Text>
-          The screen reader is{" "}
-          {this.state.isEnabled ? "enabled" : "disabled"}.
-    </Text>
-      </View>
-    );
-  }
-}
-
+import Header from './components/Header';
+import InputBar from './components/InputBar';
+import TodoItem from './components/TodoItem';
 
 export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {}
-  }
-  render() {
-    return (
-      <View>
-        <Text>Welcome to React native 2</Text>
-        <ScreenReaderStatusExample />
-        <Button title='Alert' color='black'
-          onPress={() =>
-            Alert.alert('Greetings, human!',
-              'You know just how to push my buttons!',
-              [{ text: 'Ok' }], { cancelable: false }
-            )
-          }
-        />
-        <Text>Plataform: {Platform.OS}{'\n'}Version: {Platform.Version}{'\n'}
-        </Text>
-      </View>
+  constructor() {
+    super();
 
+    this.state = {
+      todoInput: '',
+      todos: [
+        { id: 0, title: 'Take out the trash', done: false },
+        { id: 1, title: 'Cook dinner', done: false }
+      ]
+    }
+  }
+
+  addNewTodo() {
+
+    let todos = this.state.todos;//todo 1
+
+    todos.unshift({
+      id: todos.length + 1,
+      title: this.state.todoInput,
+      done: false,
+    });//todo 2
+    this.setState({
+      todos,
+      todoInput: '',
+    });
+  }
+  addNewToList() {
+
+    let lista = this.state.lista;//todo 1
+
+    lista.unshift({
+    });
+  }
+
+  toggleDone(item) {
+    let todos = this.state.todos;
+
+    todos = todos.map((todo) => {
+
+      if (todo.id == item.id) {
+        todo.done = !todo.done;
+      }
+
+      return todo;
+    });
+
+    this.setState({ todos });
+  }
+
+  removeTodo(itemToRemove) {
+    let todos = this.state.todos;
+
+    todos = todos.filter((itemWillRemove) => {
+      return itemToRemove.id !== itemWillRemove.id;
+    });
+
+    this.setState({ todos });
+  }
+
+  render() {
+    const statusBar = (Platform.OS == 'ios') ? <View style={styles.statusBar}></View> : <View></View>;
+
+    return (
+      <View style={styles.container}>
+        <Header title="todapp" />
+        <InputBar
+          textChange={todoInput => this.setState({ todoInput })}
+          addNewTodo={() => this.addNewTodo()}
+          todoInput={this.state.todoInput}
+        />
+        <FlatList
+          data={this.state.todos}
+          extraData={this.state}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item, index }) => {
+            return (
+              <TodoItem
+                todoItem={item}
+                toggleDone={() => this.toggleDone(item)}
+                removeTodo={() => this.removeTodo(item)}
+              />
+            );
+          }}
+        />
+      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  statusBar: {
+    backgroundColor: '#FFCE00',
+    height: 20,
+  }
+});
