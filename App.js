@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
+import BigInt from 'big-integer';
 import {
   View,
-  Text, StyleSheet, Platform, Alert, Button, Modal, TextInput, TouchableOpacity
+  Text,
+  Modal,
+  Button,
+  Platform,
+  TextInput,
 } from 'react-native';
 
 import Header from './src/components/Header';
 import styles from './src/components/styles';
-import MyButton from './src/components/MyButton';
-
-//const imgPath = './src/images/icons/setting.png';
 
 export default class App extends Component {
   constructor(props) {
@@ -25,9 +27,9 @@ export default class App extends Component {
 
   bin2dec = (bin) => {
     const index = bin.length;
-    let dec = 0;
+    let dec = BigInt(0);
     for (let i = 0; i < index; i++) {
-      dec += parseFloat(bin.charAt(i)) * (2 ** (index - (i + 1)));
+      dec += BigInt((bin.charAt(i))) * BigInt(2 ** (index - (i + 1)));
     }
     return dec;
   }
@@ -35,25 +37,25 @@ export default class App extends Component {
   render() {
     const msg = [
       `The number who you are trying to introduce isn't a binary.\nPlease review the number.`,
-      'Binary number valid'
+      'Binary number valid',
+      'Insert the Binary Number'
     ]
     return (
       <View style={styles.container}>
         <Header title="Bin2Dec" />
         <View style={styles.body}>
-          <Text style={{ color: this.state.colorBorderInput, marginBottom: 10 }}>{this.state.msg}</Text>
+          <Text style={[styles.msg, { color: this.state.colorBorderInput }]}>{this.state.msg}</Text>
           <TextInput
             value={this.state.textInput}
             style={[styles.input, { borderColor: this.state.colorBorderInput }]}
+            keyboardType={Platform.OS === 'ios' ? "number-pad" : "numeric"}
             onChangeText={(inText) => {
               this.setState({ textInput: inText });
-
               if (!(/[^01]/.test(inText)) && inText.length != 0) {//is a binary number
-
                 this.setState({ buttonDisabled: false, colorBorderInput: 'green', msg: msg[1] });
               }
               else {//isn't a binary number
-                this.setState({ buttonDisabled: true, colorBorderInput: 'red', msg: msg[0] });
+                this.setState({ buttonDisabled: true, colorBorderInput: 'red', msg: msg[(inText.length == 0) ? 2 : 0] });
               }
 
             }}
@@ -61,9 +63,9 @@ export default class App extends Component {
           <Button title='Generator' color={'green'}
             onPress={() => this.setState({ modalVisible: true })}
             disabled={this.state.buttonDisabled}
+            style={{ backgroundColor: 'red' }}
           />
-          {/*<MyButton />*/}
-          <View style={test} />
+
           <Modal
             animationType={'slide'}//slide: fade: none
             transparent={true}
@@ -72,10 +74,11 @@ export default class App extends Component {
             <View style={styles.body}>
               <View style={styles.modalView}>
                 <Text style={styles.modalHeader}>The Decimal Number is: </Text>
+                <View style={styles.hr} />
                 <Text style={styles.modalResult}>{this.bin2dec(this.state.textInput)}</Text>
                 <Button
                   title='close'
-                  color={'green'}
+                  color={'red'}
                   onPress={() => this.setState({ modalVisible: false })}
                 />
               </View>
@@ -86,11 +89,3 @@ export default class App extends Component {
     );
   }
 }
-
-const test = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'red',
-    flexDirection: 'row',
-  },
-});

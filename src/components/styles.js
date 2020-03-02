@@ -1,4 +1,6 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const screenWidth = Math.round(Dimensions.get('window').width);
 
 const styles = StyleSheet.create({
     container: {
@@ -11,13 +13,12 @@ const styles = StyleSheet.create({
       flex: 1,
     },
     input: {
-      //borderRadius: 50,
       marginBottom: 40,
-      //borderColor: 'green',
       borderWidth: 1,
-      width: '30%',
+      width: (screenWidth-50),
       height: 50,
       paddingLeft: 10,
+      borderRadius: 10,
     },
     generatorBody: {
       marginTop: 40,
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
       height: 30,
     },
     modalView: {
-      width: '50%',
+      width: (screenWidth-10),
       height: 250,
       alignItems: "center",
       justifyContent: 'center',
@@ -50,6 +51,7 @@ const styles = StyleSheet.create({
     modalHeader: {
       color: 'rgba(255, 255, 255, .7)',
       fontSize: 50,
+      textAlign: 'center',
     },
     modalResult: {
       color: 'rgb(255, 255, 255)',
@@ -57,6 +59,15 @@ const styles = StyleSheet.create({
       marginTop: 15,
       marginBottom: 15,
     },
+    hr:{
+      backgroundColor: 'rgba(255, 255, 255, .7)',
+      width: (screenWidth - 30),
+      height: 1,
+    },
+    msg: {
+      marginBottom: 10, 
+      fontSize: 20,
+    }
   
   });
 
