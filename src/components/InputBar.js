@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, Image, TextInput, TouchableOpacity } from 'react-native';
+
+const imgPath = './../images/icons/setting.png';
 
 const InputBar = (props) => {
     return (
@@ -13,7 +15,10 @@ const InputBar = (props) => {
                 style={styles.addButton}
                 onPress={props.addNewTodo}
             >
-                <Text style={styles.addButtonText}>ADD</Text>
+                <Text style={styles.addButtonText}>
+                    <Image source={require(imgPath)} style={styles.img} />
+                    Generator
+                </Text>
             </TouchableOpacity>
         </View>
     );
@@ -43,6 +48,11 @@ const styles = StyleSheet.create({
         color: '#171717',
         fontSize: 18,
         fontWeight: '700'
+    },
+    img: {
+        width: 20,
+        height: 20,
+        position: 'relative',
     }
 });
 export default InputBar;

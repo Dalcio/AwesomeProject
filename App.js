@@ -1,120 +1,96 @@
 import React, { Component } from 'react';
 import {
   View,
-  StyleSheet,
-  Text, Platform, FlatList, Image
+  Text, StyleSheet, Platform, Alert, Button, Modal, TextInput, TouchableOpacity
 } from 'react-native';
-import Header from './components/Header';
-import InputBar from './components/InputBar';
-import TodoItem from './components/TodoItem';
-import ListButton from './components/ListButton';
-import List from './components/List';
+
+import Header from './src/components/Header';
+import styles from './src/components/styles';
+import MyButton from './src/components/MyButton';
+
+//const imgPath = './src/images/icons/setting.png';
 
 export default class App extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
-      todoInput: '',
-      todos: [
-        { id: 0, title: 'Take out the trash', done: false },
-        { id: 1, title: 'Cook dinner', done: false }
-      ]
+      modalVisible: false,
+      buttonDisabled: true,
+      textInput: '',
+      colorBorderInput: 'green',
+      msg: 'Type The Binary Number in Box above',
     }
   }
 
-  addNewTodo() {
-
-    let todos = this.state.todos;//todo 1
-
-    todos.unshift({
-      id: todos.length + 1,
-      title: this.state.todoInput,
-      done: false,
-    });//todo 2
-    this.setState({
-      todos,
-      todoInput: '',
-    });
-  }
-  addNewToList() {
-
-    let lista = this.state.lista;//todo 1
-
-    lista.unshift({
-    });
-  }
-
-  toggleDone(item) {
-    let todos = this.state.todos;
-
-    todos = todos.map((todo) => {
-
-      if (todo.id == item.id) {
-        todo.done = !todo.done;
-      }
-
-      return todo;
-    });
-
-    this.setState({ todos });
-  }
-
-  removeTodo(itemToRemove) {
-    let todos = this.state.todos;
-
-    todos = todos.filter((itemWillRemove) => {
-      return itemToRemove.id !== itemWillRemove.id;
-    });
-
-    this.setState({ todos });
-  }
-
-  showList(){
-    return(
-      <List />
-    );
+  bin2dec = (bin) => {
+    const index = bin.length;
+    let dec = 0;
+    for (let i = 0; i < index; i++) {
+      dec += parseFloat(bin.charAt(i)) * (2 ** (index - (i + 1)));
+    }
+    return dec;
   }
 
   render() {
-    const statusBar = (Platform.OS == 'ios') ? <View style={styles.statusBar}></View> : <View></View>;
-
+    const msg = [
+      `The number who you are trying to introduce isn't a binary.\nPlease review the number.`,
+      'Binary number valid'
+    ]
     return (
       <View style={styles.container}>
-        <Header title="todapp" />
+        <Header title="Bin2Dec" />
+        <View style={styles.body}>
+          <Text style={{ color: this.state.colorBorderInput, marginBottom: 10 }}>{this.state.msg}</Text>
+          <TextInput
+            value={this.state.textInput}
+            style={[styles.input, { borderColor: this.state.colorBorderInput }]}
+            onChangeText={(inText) => {
+              this.setState({ textInput: inText });
 
-        <InputBar
-          textChange={todoInput => this.setState({ todoInput })}
-          addNewTodo={() => this.addNewTodo()}
-          todoInput={this.state.todoInput}
-        />
-        <FlatList
-          data={this.state.todos}
-          extraData={this.state}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item, index }) => {
-            return (
-              <TodoItem
-                todoItem={item}
-                toggleDone={() => this.toggleDone(item)}
-                removeTodo={() => this.removeTodo(item)}
-              />
-            );
-          }}
-        />
-        <ListButton showList={()=> this.showList()}/>
+              if (!(/[^01]/.test(inText)) && inText.length != 0) {//is a binary number
+
+                this.setState({ buttonDisabled: false, colorBorderInput: 'green', msg: msg[1] });
+              }
+              else {//isn't a binary number
+                this.setState({ buttonDisabled: true, colorBorderInput: 'red', msg: msg[0] });
+              }
+
+            }}
+          />
+          <Button title='Generator' color={'green'}
+            onPress={() => this.setState({ modalVisible: true })}
+            disabled={this.state.buttonDisabled}
+          />
+          {/*<MyButton />*/}
+          <View style={test} />
+          <Modal
+            animationType={'slide'}//slide: fade: none
+            transparent={true}
+            visible={this.state.modalVisible}
+          >
+            <View style={styles.body}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalHeader}>The Decimal Number is: </Text>
+                <Text style={styles.modalResult}>{this.bin2dec(this.state.textInput)}</Text>
+                <Button
+                  title='close'
+                  color={'green'}
+                  onPress={() => this.setState({ modalVisible: false })}
+                />
+              </View>
+            </View>
+          </Modal>
+        </View>
       </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
+const test = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'red',
+    flexDirection: 'row',
   },
-  statusBar: {
-    backgroundColor: '#FFCE00',
-    height: 20,
-  }
 });

@@ -11,7 +11,7 @@ const Header = (props) => {
 
 const styles = StyleSheet.create({
     header: {
-        backgroundColor: '#171717',
+        backgroundColor: 'green',
         height: 60,
         alignItems: 'center',
         justifyContent: 'center'
